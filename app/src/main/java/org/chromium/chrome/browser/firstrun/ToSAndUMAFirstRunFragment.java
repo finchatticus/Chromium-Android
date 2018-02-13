@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import org.chromium.base.ApiCompatibilityUtils;
+import org.chromium.base.Log;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.ChromeVersionInfo;
 import org.chromium.ui.text.NoUnderlineClickableSpan;
@@ -28,6 +29,9 @@ import org.chromium.ui.text.SpanApplier.SpanInfo;
  * User Metrics Analysis) as defined in the Chrome Privacy Notice.
  */
 public class ToSAndUMAFirstRunFragment extends FirstRunPage {
+
+    private static final String TAG = ToSAndUMAFirstRunFragment.class.getSimpleName();
+
     private Button mAcceptButton;
     private CheckBox mSendReportCheckBox;
     private TextView mTosAndPrivacy;
@@ -39,6 +43,7 @@ public class ToSAndUMAFirstRunFragment extends FirstRunPage {
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.wtf(TAG, "VLADOSIK onCreateView");
         return inflater.inflate(R.layout.fre_tosanduma, container, false);
     }
 

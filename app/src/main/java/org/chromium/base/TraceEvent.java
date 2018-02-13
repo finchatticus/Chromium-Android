@@ -32,6 +32,8 @@ public class TraceEvent implements AutoCloseable {
     private static volatile boolean sEnabled;
     private static volatile boolean sATraceEnabled; // True when taking an Android systrace.
 
+    private static final String VLADOSIK_TAG = TraceEvent.class.getSimpleName();
+
     private static class BasicLooperMonitor implements Printer {
         private static final String EARLY_TOPLEVEL_TASK_NAME = "Looper.dispatchMessage: ";
 
@@ -333,6 +335,7 @@ public class TraceEvent implements AutoCloseable {
      * @param name The name of the event.
      */
     public static void begin(String name) {
+        Log.wtf(VLADOSIK_TAG, name);
         begin(name, null);
     }
 

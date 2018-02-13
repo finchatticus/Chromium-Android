@@ -115,6 +115,7 @@ public class LaunchIntentDispatcher implements IntentHandler.IntentHandlerDelega
      * @return action to take
      */
     public static @Action int dispatchToTabbedActivity(Activity currentActivity, Intent intent) {
+        Log.wtf(TAG, "dispatchToTabbedActivity");
         return new LaunchIntentDispatcher(currentActivity, intent).dispatchToTabbedActivity();
     }
 
@@ -133,24 +134,30 @@ public class LaunchIntentDispatcher implements IntentHandler.IntentHandlerDelega
     }
 
     private LaunchIntentDispatcher(Activity activity, Intent intent) {
+        Log.wtf(TAG, "LaunchIntentDispatcher");
         mActivity = activity;
         mIntent = IntentUtils.sanitizeIntent(intent);
 
         // Needs to be called as early as possible, to accurately capture the
         // time at which the intent was received.
         if (mIntent != null && IntentHandler.getTimestampFromIntent(mIntent) == -1) {
+            Log.wtf(TAG, "mIntent != null && IntentHandler.getTimestampFromIntent(mIntent) == -1");
             IntentHandler.addTimestampToIntent(mIntent);
         }
 
         recordIntentMetrics();
 
         boolean isCustomTabIntent = isCustomTabIntent(mIntent);
+        Log.wtf(TAG, "isCustomTabIntent: " + isCustomTabIntent);
         boolean isHerbIntent = false;
+        Log.wtf(TAG, "isHerbIntent: " + isHerbIntent);
         // If the intent was created by Reader Mode, ignore herb and custom tab information.
         if (!isCustomTabIntent && !ReaderModeManager.isReaderModeCreatedIntent(mIntent)
                 && !VrIntentUtils.isVrIntent(mIntent)) {
             isHerbIntent = isHerbIntent(mIntent);
+            Log.wtf(TAG, "isHerbIntent: " + isHerbIntent);
             isCustomTabIntent = isHerbIntent;
+            Log.wtf(TAG, "isCustomTabIntent: " + isCustomTabIntent);
         }
         mIsCustomTabIntent = isCustomTabIntent;
         mIsHerbIntent = isHerbIntent;
@@ -165,19 +172,24 @@ public class LaunchIntentDispatcher implements IntentHandler.IntentHandlerDelega
         // Read partner browser customizations information asynchronously.
         // We want to initialize early because when there are no tabs to restore, we should possibly
         // show homepage, which might require reading PartnerBrowserCustomizations provider.
+        Log.wtf(TAG, "START dispatch");
         PartnerBrowserCustomizations.initializeAsync(
                 mActivity.getApplicationContext(), PARTNER_BROWSER_CUSTOMIZATIONS_TIMEOUT_MS);
 
         int tabId = IntentUtils.safeGetIntExtra(
                 mIntent, IntentHandler.TabOpenType.BRING_TAB_TO_FRONT.name(), Tab.INVALID_TAB_ID);
+        Log.wtf(TAG, "tabId: " + tabId);
         boolean incognito =
                 mIntent.getBooleanExtra(IntentHandler.EXTRA_OPEN_NEW_INCOGNITO_TAB, false);
+        Log.wtf(TAG, "incognito: " + incognito);
 
         // Check if a web search Intent is being handled.
         IntentHandler intentHandler = new IntentHandler(this, mActivity.getPackageName());
         String url = IntentHandler.getUrlFromIntent(mIntent);
+        Log.wtf(TAG, "url: " + url);
         if (url == null && tabId == Tab.INVALID_TAB_ID && !incognito
                 && intentHandler.handleWebSearchIntent(mIntent)) {
+            Log.wtf(TAG, "url == null && tabId == Tab.INVALID_TAB_ID && !incognito && intentHandler.handleWebSearchIntent(mIntent)");
             return Action.FINISH_ACTIVITY;
         }
 
@@ -187,12 +199,14 @@ public class LaunchIntentDispatcher implements IntentHandler.IntentHandlerDelega
         // here instead of being spread between ChromeTabbedActivity and ChromeLauncherActivity.
         // https://crbug.com/443772, https://crbug.com/522918
         if (WebappLauncherActivity.bringWebappToFront(tabId)) {
+            Log.wtf(TAG, "WebappLauncherActivity.bringWebappToFront(tabId)");
             return Action.FINISH_ACTIVITY_REMOVE_TASK;
         }
 
         // The notification settings cog on the flipped side of Notifications and in the Android
         // Settings "App Notifications" view will open us with a specific category.
         if (mIntent.hasCategory(Notification.INTENT_CATEGORY_NOTIFICATION_PREFERENCES)) {
+            Log.wtf(TAG, "mIntent.hasCategory(Notification.INTENT_CATEGORY_NOTIFICATION_PREFERENCES)");
             NotificationPlatformBridge.launchNotificationPreferences(mActivity, mIntent);
             return Action.FINISH_ACTIVITY;
         }
@@ -200,22 +214,26 @@ public class LaunchIntentDispatcher implements IntentHandler.IntentHandlerDelega
         // Check if we should launch an Instant App to handle the intent.
         if (InstantAppsHandler.getInstance().handleIncomingIntent(
                     mActivity, mIntent, mIsCustomTabIntent && !mIsHerbIntent, false)) {
+            Log.wtf(TAG, "InstantAppsHandler.getInstance().handleIncomingIntent(mActivity, mIntent, mIsCustomTabIntent && !mIsHerbIntent, false)");
             return Action.FINISH_ACTIVITY;
         }
 
         // Check if we should push the user through First Run.
         if (FirstRunFlowSequencer.launch(mActivity, mIntent, false /* requiresBroadcast */,
                     false /* preferLightweightFre */)) {
+            Log.wtf(TAG, "FirstRunFlowSequencer.launch(mActivity, mIntent, false, false");
             return Action.FINISH_ACTIVITY;
         }
 
         // Check if we should launch the ChromeTabbedActivity.
         if (!mIsCustomTabIntent && !FeatureUtilities.isDocumentMode(mActivity)) {
+            Log.wtf(TAG, "!mIsCustomTabIntent && !FeatureUtilities.isDocumentMode(mActivity)");
             return dispatchToTabbedActivity();
         }
 
         // Check if we should launch a Custom Tab.
         if (mIsCustomTabIntent) {
+            Log.wtf(TAG, "mIsCustomTabIntent");
             launchCustomTabActivity();
             return Action.FINISH_ACTIVITY;
         }

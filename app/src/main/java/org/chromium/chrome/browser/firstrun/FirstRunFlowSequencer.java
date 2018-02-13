@@ -281,6 +281,7 @@ public abstract class FirstRunFlowSequencer  {
      * @param fromChromeIcon Whether Chrome is opened via the Chrome icon.
      */
     public static Intent createGenericFirstRunIntent(Context context, boolean fromChromeIcon) {
+        Log.wtf(TAG, "createGenericFirstRunIntent");
         Intent intent = new Intent();
         intent.setClassName(context, FirstRunActivity.class.getName());
         intent.putExtra(FirstRunActivity.EXTRA_COMING_FROM_CHROME_ICON, fromChromeIcon);
@@ -289,6 +290,7 @@ public abstract class FirstRunFlowSequencer  {
 
     /** Returns an intent to show lightweight first run activity. */
     public static Intent createLightweightFirstRunIntent(Context context) {
+        Log.wtf(TAG, "createLightweightFirstRunIntent");
         Intent intent = new Intent();
         intent.setClassName(context, LightweightFirstRunActivity.class.getName());
         return intent;
@@ -347,6 +349,11 @@ public abstract class FirstRunFlowSequencer  {
         if ((intent.getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0) {
             boolean isGenericFreActive = false;
             List<WeakReference<Activity>> activities = ApplicationStatus.getRunningActivities();
+            for (WeakReference<Activity> activityRef: activities) {
+                if (activityRef.get() != null) {
+                    Log.wtf(TAG, "activity: " + activityRef.get().getClass().getSimpleName());
+                }
+            }
             for (WeakReference<Activity> weakActivity : activities) {
                 Activity activity = weakActivity.get();
                 if (activity instanceof FirstRunActivity) {
@@ -357,6 +364,7 @@ public abstract class FirstRunFlowSequencer  {
 
             if (isGenericFreActive) {
                 // Launch the Generic First Run Experience if it was previously active.
+                Log.wtf(TAG,"isGenericFreActive true");
                 freIntent = createGenericFirstRunIntent(
                         caller, TextUtils.equals(intent.getAction(), Intent.ACTION_MAIN));
             }

@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import org.chromium.base.Log;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.net.spdyproxy.DataReductionProxySettings;
 import org.chromium.chrome.browser.preferences.datareduction.DataReductionPromoUtils;
@@ -21,9 +22,12 @@ import org.chromium.chrome.browser.preferences.datareduction.DataReductionPromoU
  */
 public class DataReductionProxyFirstRunFragment extends FirstRunPage {
 
+    public static final String TAG = DataReductionProxyFirstRunFragment.class.getSimpleName();
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.wtf(TAG, "VLADOSIK onCreateView");
         return inflater.inflate(R.layout.fre_data_reduction_proxy, container, false);
     }
 

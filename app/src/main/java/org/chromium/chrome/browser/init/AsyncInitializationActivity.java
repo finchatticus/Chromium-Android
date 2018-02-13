@@ -29,6 +29,7 @@ import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.view.WindowManager;
 
 import org.chromium.base.ApiCompatibilityUtils;
+import org.chromium.base.Log;
 import org.chromium.base.TraceEvent;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.base.library_loader.LibraryLoader;
@@ -55,6 +56,9 @@ import java.lang.reflect.Field;
  */
 public abstract class AsyncInitializationActivity extends AppCompatActivity implements
         ChromeActivityNativeDelegate, BrowserParts {
+
+    private static final String TAG = AsyncInitializationActivity.class.getSimpleName();
+
     protected final Handler mHandler;
 
     private final NativeInitializationController mNativeInitializationController =
@@ -193,6 +197,7 @@ public abstract class AsyncInitializationActivity extends AppCompatActivity impl
             Intent intent = getIntent();
             if (intent == null || !Intent.ACTION_VIEW.equals(intent.getAction())) return;
             String url = IntentHandler.getUrlFromIntent(intent);
+            Log.wtf(TAG, "url " + url);
             if (url == null) return;
             WarmupManager.getInstance().maybePreconnectUrlAndSubResources(
                     Profile.getLastUsedProfile(), url);

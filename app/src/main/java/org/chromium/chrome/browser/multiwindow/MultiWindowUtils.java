@@ -18,6 +18,7 @@ import org.chromium.base.ActivityState;
 import org.chromium.base.ApiCompatibilityUtils;
 import org.chromium.base.ApplicationStatus;
 import org.chromium.base.ApplicationStatus.ActivityStateListener;
+import org.chromium.base.Log;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.chrome.browser.AppHooks;
 import org.chromium.chrome.browser.ChromeTabbedActivity;
@@ -37,6 +38,9 @@ import javax.annotation.Nullable;
  * Thread-safe: This class may be accessed from any thread.
  */
 public class MultiWindowUtils implements ActivityStateListener {
+
+    public static final String TAG = "MultiWindowUtils";
+
     private static AtomicReference<MultiWindowUtils> sInstance = new AtomicReference<>();
 
     // Used to keep track of whether ChromeTabbedActivity2 is running. A tri-state Boolean is
@@ -145,16 +149,19 @@ public class MultiWindowUtils implements ActivityStateListener {
      */
     public Class<? extends ChromeTabbedActivity> getTabbedActivityForIntent(
             @Nullable Intent intent, Context context) {
+        Log.wtf(TAG, "getTabbedActivityForIntent");
         // 1. Exit early if the build version doesn't support Android N+ multi-window mode or
         // ChromeTabbedActivity2 isn't running.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M
                 || (mTabbedActivity2TaskRunning != null && !mTabbedActivity2TaskRunning)) {
+            Log.wtf(TAG, "ChromeTabbedActivity");
             return ChromeTabbedActivity.class;
         }
 
         // 2. If the intent has a window id set, use that.
         if (intent != null && IntentUtils.safeHasExtra(intent, IntentHandler.EXTRA_WINDOW_ID)) {
             int windowId = IntentUtils.safeGetIntExtra(intent, IntentHandler.EXTRA_WINDOW_ID, 0);
+            Log.wtf(TAG, "ChromeTabbedActivity1 or 2");
             if (windowId == 1) return ChromeTabbedActivity.class;
             if (windowId == 2) return ChromeTabbedActivity2.class;
         }
@@ -162,6 +169,7 @@ public class MultiWindowUtils implements ActivityStateListener {
         // 3. If only one ChromeTabbedActivity is currently in Android recents, use it.
         boolean tabbed2TaskRunning = isActivityTaskInRecents(
                 ChromeTabbedActivity2.class.getName(), context);
+        Log.wtf(TAG,"tabbed2TaskRunning: " + tabbed2TaskRunning);
 
         // Exit early if ChromeTabbedActivity2 isn't running.
         if (!tabbed2TaskRunning) {

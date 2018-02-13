@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.chromium.base.Log;
 import org.chromium.base.metrics.RecordUserAction;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.profiles.Profile;
@@ -22,6 +23,9 @@ import org.chromium.chrome.browser.signin.SigninManager;
  * A {@link Fragment} meant to handle sync setup for the first run experience.
  */
 public class AccountFirstRunFragment extends FirstRunPage implements AccountSigninView.Delegate {
+
+    private static final String TAG = AccountFirstRunFragment.class.getSimpleName();
+
     // Per-page parameters:
     public static final String FORCE_SIGNIN_ACCOUNT_TO = "ForceSigninAccountTo";
     public static final String PRESELECT_BUT_ALLOW_TO_CHANGE = "PreselectButAllowToChange";
@@ -32,6 +36,7 @@ public class AccountFirstRunFragment extends FirstRunPage implements AccountSign
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.wtf(TAG, "VLADOSIK onCreateView");
         mView = (AccountSigninView) inflater.inflate(
                 R.layout.account_signin_view, container, false);
         return mView;

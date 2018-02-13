@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import org.chromium.base.Log;
 import org.chromium.base.ThreadUtils;
 import org.chromium.base.metrics.RecordUserAction;
 import org.chromium.chrome.R;
@@ -22,6 +23,9 @@ import org.chromium.chrome.browser.widget.RadioButtonLayout;
 
 /** A {@link Fragment} that presents a set of search engines for the user to choose from. */
 public class DefaultSearchEngineFirstRunFragment extends FirstRunPage {
+
+    private static final String TAG = DefaultSearchEngineFirstRunFragment.class.getSimpleName();
+
     @SearchEnginePromoType
     private int mSearchEnginePromoDialoType;
     private boolean mShownRecorded;
@@ -35,6 +39,7 @@ public class DefaultSearchEngineFirstRunFragment extends FirstRunPage {
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.wtf(TAG, "VLADOSIK onCreateView");
         View rootView = inflater.inflate(
                 R.layout.default_search_engine_first_run_fragment, container, false);
         mEngineLayout = (RadioButtonLayout) rootView.findViewById(
