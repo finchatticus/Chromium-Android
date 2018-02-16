@@ -36,6 +36,8 @@ import org.chromium.chrome.browser.search_engines.TemplateUrlService.TemplateUrl
 import org.chromium.chrome.browser.search_engines.TemplateUrlService.TemplateUrlServiceObserver;
 import org.chromium.chrome.browser.util.IntentUtils;
 
+import vladosik.util.LogUtil;
+
 /**
  * Widget that lets the user search using their default search engine.
  *
@@ -298,6 +300,7 @@ public class SearchWidgetProvider extends AppWidgetProvider {
 
     /** Attempts to update the cached search engine name. */
     public static void updateCachedEngineName() {
+        Log.wtf(LogUtil.getLogTag(SearchWidgetProvider.class), "updateCachedEngineName");
         ThreadUtils.assertOnUiThread();
         if (!LibraryLoader.isInitialized()) return;
 

@@ -13,6 +13,9 @@ import android.util.Printer;
 import org.chromium.base.annotations.CalledByNative;
 import org.chromium.base.annotations.JNINamespace;
 import org.chromium.base.annotations.MainDex;
+
+import vladosik.util.LogUtil;
+
 /**
  * Java mirror of Chrome trace event API. See base/trace_event/trace_event.h.
  *
@@ -31,8 +34,6 @@ import org.chromium.base.annotations.MainDex;
 public class TraceEvent implements AutoCloseable {
     private static volatile boolean sEnabled;
     private static volatile boolean sATraceEnabled; // True when taking an Android systrace.
-
-    private static final String VLADOSIK_TAG = TraceEvent.class.getSimpleName();
 
     private static class BasicLooperMonitor implements Printer {
         private static final String EARLY_TOPLEVEL_TASK_NAME = "Looper.dispatchMessage: ";
@@ -335,7 +336,7 @@ public class TraceEvent implements AutoCloseable {
      * @param name The name of the event.
      */
     public static void begin(String name) {
-        Log.wtf(VLADOSIK_TAG, name);
+        Log.wtf(LogUtil.getLogTag(TraceEvent.class), name);
         begin(name, null);
     }
 

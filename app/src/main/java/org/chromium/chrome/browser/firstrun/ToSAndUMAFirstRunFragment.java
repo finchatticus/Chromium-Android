@@ -23,15 +23,14 @@ import org.chromium.ui.text.NoUnderlineClickableSpan;
 import org.chromium.ui.text.SpanApplier;
 import org.chromium.ui.text.SpanApplier.SpanInfo;
 
+import vladosik.util.LogUtil;
+
 /**
  * The First Run Experience fragment that allows the user to accept Terms of Service ("ToS") and
  * Privacy Notice, and to opt-in to the usage statistics and crash reports collection ("UMA",
  * User Metrics Analysis) as defined in the Chrome Privacy Notice.
  */
 public class ToSAndUMAFirstRunFragment extends FirstRunPage {
-
-    private static final String TAG = ToSAndUMAFirstRunFragment.class.getSimpleName();
-
     private Button mAcceptButton;
     private CheckBox mSendReportCheckBox;
     private TextView mTosAndPrivacy;
@@ -43,7 +42,7 @@ public class ToSAndUMAFirstRunFragment extends FirstRunPage {
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.wtf(TAG, "VLADOSIK onCreateView");
+        Log.wtf(LogUtil.getLogTag(ToSAndUMAFirstRunFragment.class), "onCreateView");
         return inflater.inflate(R.layout.fre_tosanduma, container, false);
     }
 

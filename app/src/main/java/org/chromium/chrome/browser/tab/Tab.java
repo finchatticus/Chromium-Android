@@ -123,6 +123,8 @@ import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.util.List;
 
+import vladosik.util.LogUtil;
+
 /**
  * The basic Java representation of a tab.  Contains and manages a {@link ContentView}.
  * <p>
@@ -644,6 +646,7 @@ public class Tab
      *         prerendered. DEFAULT_PAGE_LOAD if it had not.
      */
     public int loadUrl(LoadUrlParams params) {
+        Log.wtf(LogUtil.getLogTag(Tab.class), "loadUrl: " + params.getUrl());
         try {
             TraceEvent.begin("Tab.loadUrl");
             // TODO(tedchoc): When showing the android NTP, delay the call to nativeLoadUrl until

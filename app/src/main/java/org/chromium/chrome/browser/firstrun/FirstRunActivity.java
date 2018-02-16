@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import vladosik.util.LogUtil;
+
 /**
  * Handles the First Run Experience sequences shown to the user launching Chrome for the first time.
  * It supports only a simple format of FRE:
@@ -44,8 +46,6 @@ import java.util.concurrent.Callable;
  * The activity might be run more than once, e.g. 1) for ToS and sign-in, and 2) for intro.
  */
 public class FirstRunActivity extends FirstRunActivityBase implements FirstRunPageDelegate {
-
-    private static final String TAG = "FirstRunActivity";
 
     /** Alerted about various events when FirstRunActivity performs them. */
     public interface FirstRunActivityObserver {
@@ -127,7 +127,7 @@ public class FirstRunActivity extends FirstRunActivityBase implements FirstRunPa
      * Defines a sequence of pages to be shown (depending on parameters etc).
      */
     private void createPageSequence() {
-        Log.wtf(TAG, "createPageSequence");
+        Log.wtf(LogUtil.getLogTag(FirstRunActivity.class), "createPageSequence");
         mPages = new ArrayList<Callable<FirstRunPage>>();
         mFreProgressStates = new ArrayList<Integer>();
 
@@ -142,7 +142,7 @@ public class FirstRunActivity extends FirstRunActivityBase implements FirstRunPa
     }
 
     private void createPostNativePageSequence() {
-        Log.wtf(TAG, "createPostNativePageSequence");
+        Log.wtf(LogUtil.getLogTag(FirstRunActivity.class), "createPostNativePageSequence");
         // Note: Can't just use POST_NATIVE_SETUP_NEEDED for the early return, because this
         // populates |mPages| which needs to be done even even if onNativeInitialized() was
         // performed in a previous session.
@@ -152,7 +152,7 @@ public class FirstRunActivity extends FirstRunActivityBase implements FirstRunPa
         boolean notifyAdapter = false;
         // An optional Data Saver page.
         if (mFreProperties.getBoolean(SHOW_DATA_REDUCTION_PAGE)) {
-            Log.wtf(TAG, "mFreProperties.getBoolean(SHOW_DATA_REDUCTION_PAGE): true");
+            Log.wtf(LogUtil.getLogTag(FirstRunActivity.class), "mFreProperties.getBoolean(SHOW_DATA_REDUCTION_PAGE): true");
             mPages.add(pageOf(DataReductionProxyFirstRunFragment.class));
             mFreProgressStates.add(FRE_PROGRESS_DATA_SAVER_SHOWN);
             notifyAdapter = true;
@@ -160,7 +160,7 @@ public class FirstRunActivity extends FirstRunActivityBase implements FirstRunPa
 
         // An optional page to select a default search engine.
         if (mFreProperties.getBoolean(SHOW_SEARCH_ENGINE_PAGE)) {
-            Log.wtf(TAG, "mFreProperties.getBoolean(SHOW_SEARCH_ENGINE_PAGE): true");
+            Log.wtf(LogUtil.getLogTag(FirstRunActivity.class), "mFreProperties.getBoolean(SHOW_SEARCH_ENGINE_PAGE): true");
             mPages.add(pageOf(DefaultSearchEngineFirstRunFragment.class));
             mFreProgressStates.add(FRE_PROGRESS_DEFAULT_SEARCH_ENGINE_SHOWN);
             notifyAdapter = true;
@@ -168,7 +168,7 @@ public class FirstRunActivity extends FirstRunActivityBase implements FirstRunPa
 
         // An optional sign-in page.
         if (mFreProperties.getBoolean(SHOW_SIGNIN_PAGE)) {
-            Log.wtf(TAG, "mFreProperties.getBoolean(SHOW_SIGNIN_PAGE): true");
+            Log.wtf(LogUtil.getLogTag(FirstRunActivity.class), "mFreProperties.getBoolean(SHOW_SIGNIN_PAGE): true");
             mPages.add(pageOf(AccountFirstRunFragment.class));
             mFreProgressStates.add(FRE_PROGRESS_SIGNIN_SHOWN);
             notifyAdapter = true;
@@ -228,7 +228,7 @@ public class FirstRunActivity extends FirstRunActivityBase implements FirstRunPa
                 }
 
                 createPageSequence();
-                Log.wtf(TAG, "mNativeSideIsInitialized: " + mNativeSideIsInitialized);
+                Log.wtf(LogUtil.getLogTag(FirstRunActivity.class), "mNativeSideIsInitialized: " + mNativeSideIsInitialized);
                 if (mNativeSideIsInitialized) {
                     createPostNativePageSequence();
                 }
@@ -355,6 +355,7 @@ public class FirstRunActivity extends FirstRunActivityBase implements FirstRunPa
     // FirstRunPageDelegate:
     @Override
     public void advanceToNextPage() {
+        Log.wtf(LogUtil.getLogTag(FirstRunActivity.class), "advanceToNextPage: " + (mPager.getCurrentItem() + 1));
         jumpToPage(mPager.getCurrentItem() + 1);
     }
 
@@ -373,6 +374,7 @@ public class FirstRunActivity extends FirstRunActivityBase implements FirstRunPa
 
     @Override
     public void completeFirstRunExperience() {
+        Log.wtf(LogUtil.getLogTag(FirstRunActivity.class), "completeFirstRunExperience");
         if (!mNativeSideIsInitialized) {
             mDeferredCompleteFRE = true;
             return;
@@ -428,6 +430,7 @@ public class FirstRunActivity extends FirstRunActivityBase implements FirstRunPa
 
     @Override
     public void refuseSignIn() {
+        Log.wtf(LogUtil.getLogTag(FirstRunActivity.class), "refuseSignIn");
         sSigninChoiceHistogram.record(SIGNIN_NO_THANKS);
         mResultSignInAccountName = null;
         mResultShowSignInSettings = false;
@@ -479,12 +482,15 @@ public class FirstRunActivity extends FirstRunActivityBase implements FirstRunPa
      * @param position A page index to transition to.
      */
     private boolean jumpToPage(int position) {
+        Log.wtf(LogUtil.getLogTag(FirstRunActivity.class), "jumpToPage: " + position);
         if (sObserver != null) sObserver.onJumpToPage(position);
 
         if (mShowWelcomePage && !didAcceptTermsOfService()) {
+            Log.wtf(LogUtil.getLogTag(FirstRunActivity.class), "mShowWelcomePage && !didAcceptTermsOfService:");
             return position == 0;
         }
         if (position >= mPagerAdapter.getCount()) {
+            Log.wtf(LogUtil.getLogTag(FirstRunActivity.class), "position >= mPagerAdapter.getCount()");
             completeFirstRunExperience();
             return false;
         }

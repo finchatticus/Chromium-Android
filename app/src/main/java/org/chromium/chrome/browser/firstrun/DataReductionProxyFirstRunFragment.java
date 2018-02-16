@@ -17,17 +17,17 @@ import org.chromium.chrome.R;
 import org.chromium.chrome.browser.net.spdyproxy.DataReductionProxySettings;
 import org.chromium.chrome.browser.preferences.datareduction.DataReductionPromoUtils;
 
+import vladosik.util.LogUtil;
+
 /**
  * The First Run Experience fragment that allows the user to opt in to Data Saver.
  */
 public class DataReductionProxyFirstRunFragment extends FirstRunPage {
 
-    public static final String TAG = DataReductionProxyFirstRunFragment.class.getSimpleName();
-
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.wtf(TAG, "VLADOSIK onCreateView");
+        Log.wtf(LogUtil.getLogTag(DataReductionProxyFirstRunFragment.class), "onCreateView");
         return inflater.inflate(R.layout.fre_data_reduction_proxy, container, false);
     }
 

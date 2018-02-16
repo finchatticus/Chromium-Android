@@ -21,10 +21,10 @@ import org.chromium.chrome.browser.locale.LocaleManager.SearchEnginePromoType;
 import org.chromium.chrome.browser.search_engines.TemplateUrlService;
 import org.chromium.chrome.browser.widget.RadioButtonLayout;
 
+import vladosik.util.LogUtil;
+
 /** A {@link Fragment} that presents a set of search engines for the user to choose from. */
 public class DefaultSearchEngineFirstRunFragment extends FirstRunPage {
-
-    private static final String TAG = DefaultSearchEngineFirstRunFragment.class.getSimpleName();
 
     @SearchEnginePromoType
     private int mSearchEnginePromoDialoType;
@@ -39,7 +39,7 @@ public class DefaultSearchEngineFirstRunFragment extends FirstRunPage {
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.wtf(TAG, "VLADOSIK onCreateView");
+        Log.wtf(LogUtil.getLogTag(DefaultSearchEngineFirstRunFragment.class), "onCreateView");
         View rootView = inflater.inflate(
                 R.layout.default_search_engine_first_run_fragment, container, false);
         mEngineLayout = (RadioButtonLayout) rootView.findViewById(

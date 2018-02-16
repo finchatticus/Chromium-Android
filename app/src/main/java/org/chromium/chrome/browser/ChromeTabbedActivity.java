@@ -148,6 +148,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import vladosik.util.LogUtil;
+
 /**
  * This is the main activity for ChromeMobile when not running in document mode.  All the tabs
  * are accessible via a chrome specific tab switching UI.
@@ -345,6 +347,7 @@ public class ChromeTabbedActivity
         @Override
         public Tab createNewTab(
                 LoadUrlParams loadUrlParams, TabLaunchType type, Tab parent, Intent intent) {
+            Log.wtf(LogUtil.getLogTag(ChromeTabbedActivity.class), "createNewTab: " + loadUrlParams.getUrl());
             if (openNtpBottomSheet(loadUrlParams.getUrl())) return null;
             return super.createNewTab(loadUrlParams, type, parent, intent);
         }
@@ -1574,6 +1577,7 @@ public class ChromeTabbedActivity
 
             @Override
             public void onPageLoadStarted(Tab tab, String url) {
+                Log.wtf(LogUtil.getLogTag(ChromeTabbedActivity.class), "onPageLoadStarted: " + url);
                 // Discard startup navigation measurements when the user interfered and started the
                 // 2nd navigation (in activity lifetime) in parallel.
                 if (!mIsFirstPageLoadStart) {
@@ -1585,6 +1589,7 @@ public class ChromeTabbedActivity
 
             @Override
             public void onPageLoadFinished(final Tab tab) {
+                Log.wtf(LogUtil.getLogTag(ChromeTabbedActivity.class), "onPageLoadFinished");
                 mAppIndexingUtil.extractCopylessPasteMetadata(tab);
             }
 

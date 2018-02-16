@@ -51,13 +51,13 @@ import org.chromium.ui.base.WindowAndroid;
 
 import java.lang.reflect.Field;
 
+import vladosik.util.LogUtil;
+
 /**
  * An activity that talks with application and activity level delegates for async initialization.
  */
 public abstract class AsyncInitializationActivity extends AppCompatActivity implements
         ChromeActivityNativeDelegate, BrowserParts {
-
-    private static final String TAG = AsyncInitializationActivity.class.getSimpleName();
 
     protected final Handler mHandler;
 
@@ -197,7 +197,7 @@ public abstract class AsyncInitializationActivity extends AppCompatActivity impl
             Intent intent = getIntent();
             if (intent == null || !Intent.ACTION_VIEW.equals(intent.getAction())) return;
             String url = IntentHandler.getUrlFromIntent(intent);
-            Log.wtf(TAG, "url " + url);
+            Log.wtf(LogUtil.getLogTag(AsyncInitializationActivity.class), "url " + url);
             if (url == null) return;
             WarmupManager.getInstance().maybePreconnectUrlAndSubResources(
                     Profile.getLastUsedProfile(), url);

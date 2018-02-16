@@ -13,18 +13,18 @@ import org.chromium.base.Log;
 import org.chromium.base.TraceEvent;
 import org.chromium.chrome.browser.LaunchIntentDispatcher;
 
+import vladosik.util.LogUtil;
+
 /**
  * Dispatches incoming intents to the appropriate activity based on the current configuration and
  * Intent fired.
  */
 public class ChromeLauncherActivity extends Activity {
 
-    private static final String TAG = ChromeLauncherActivity.class.getSimpleName();
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // Third-party code adds disk access to Activity.onCreate. http://crbug.com/619824
-        Log.wtf(TAG, "onCreate");
+        Log.wtf(LogUtil.getLogTag(ChromeLauncherActivity.class), "onCreate");
         StrictMode.ThreadPolicy oldPolicy = StrictMode.allowThreadDiskReads();
         TraceEvent.begin("ChromeLauncherActivity.onCreate");
         try {
@@ -32,7 +32,7 @@ public class ChromeLauncherActivity extends Activity {
 
             @LaunchIntentDispatcher.Action
             int dispatchAction = LaunchIntentDispatcher.dispatch(this, getIntent());
-            Log.wtf(TAG, "dispatchAction: " + dispatchAction);
+            Log.wtf(LogUtil.getLogTag(ChromeLauncherActivity.class), "dispatchAction: " + dispatchAction);
             switch (dispatchAction) {
                 case LaunchIntentDispatcher.Action.FINISH_ACTIVITY:
                     finish();

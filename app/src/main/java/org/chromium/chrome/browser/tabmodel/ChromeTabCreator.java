@@ -7,6 +7,7 @@ package org.chromium.chrome.browser.tabmodel;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import org.chromium.base.Log;
 import org.chromium.base.SysUtils;
 import org.chromium.base.TraceEvent;
 import org.chromium.chrome.browser.ChromeActivity;
@@ -25,6 +26,8 @@ import org.chromium.content_public.browser.WebContents;
 import org.chromium.content_public.common.Referrer;
 import org.chromium.ui.base.PageTransition;
 import org.chromium.ui.base.WindowAndroid;
+
+import vladosik.util.LogUtil;
 
 /**
  * This class creates various kinds of new tabs and adds them to the right {@link TabModel}.
@@ -61,6 +64,7 @@ public class ChromeTabCreator extends TabCreatorManager.TabCreator {
     @Override
     public Tab createNewTab(LoadUrlParams loadUrlParams, TabModel.TabLaunchType type,
             Tab parent) {
+        Log.wtf(LogUtil.getLogTag(ChromeTabCreator.class), "createNewTab1: " + loadUrlParams.getUrl());
         return createNewTab(loadUrlParams, type, parent, null);
     }
 
@@ -74,6 +78,7 @@ public class ChromeTabCreator extends TabCreatorManager.TabCreator {
      */
     public Tab createNewTab(LoadUrlParams loadUrlParams, TabModel.TabLaunchType type,
             Tab parent, Intent intent) {
+        Log.wtf(LogUtil.getLogTag(ChromeTabCreator.class), "createNewTab2: " + loadUrlParams.getUrl());
         // If parent is in the same tab model, place the new tab next to it.
         int position = TabModel.INVALID_TAB_INDEX;
         int index = mTabModel.indexOf(parent);
@@ -93,6 +98,7 @@ public class ChromeTabCreator extends TabCreatorManager.TabCreator {
      */
     private Tab createNewTab(LoadUrlParams loadUrlParams, TabModel.TabLaunchType type,
             Tab parent, int position, Intent intent) {
+        Log.wtf(LogUtil.getLogTag(ChromeTabCreator.class), "createNewTab3: " + loadUrlParams.getUrl());
         try {
             TraceEvent.begin("ChromeTabCreator.createNewTab");
             int parentId = parent != null ? parent.getId() : Tab.INVALID_TAB_ID;
@@ -156,6 +162,7 @@ public class ChromeTabCreator extends TabCreatorManager.TabCreator {
                         tab.getWebContents());
             }
 
+            Log.wtf(LogUtil.getLogTag(ChromeTabCreator.class), "tab position: " + position);
             mTabModel.addTab(tab, position, type);
             return tab;
         } finally {
@@ -166,6 +173,7 @@ public class ChromeTabCreator extends TabCreatorManager.TabCreator {
     @Override
     public boolean createTabWithWebContents(Tab parent, WebContents webContents, int parentId,
             TabLaunchType type, String url) {
+        Log.wtf(LogUtil.getLogTag(ChromeTabCreator.class), "createTabWithWebContents");
         // The parent tab was already closed.  Do not open child tabs.
         if (mTabModel.isClosurePending(parentId)) return false;
 
@@ -186,6 +194,7 @@ public class ChromeTabCreator extends TabCreatorManager.TabCreator {
 
     @Override
     public Tab launchUrl(String url, TabModel.TabLaunchType type) {
+        Log.wtf(LogUtil.getLogTag(ChromeTabCreator.class), "launchUrl1: " + url);
         return launchUrl(url, type, null, 0);
     }
 
@@ -202,6 +211,7 @@ public class ChromeTabCreator extends TabCreatorManager.TabCreator {
      */
     public Tab launchUrl(String url, TabModel.TabLaunchType type, Intent intent,
             long intentTimestamp) {
+        Log.wtf(LogUtil.getLogTag(ChromeTabCreator.class), "launchUrl2: " + url);
         LoadUrlParams loadUrlParams = new LoadUrlParams(url);
         loadUrlParams.setIntentReceivedTimestamp(intentTimestamp);
         return createNewTab(loadUrlParams, type, null, intent);
@@ -223,6 +233,7 @@ public class ChromeTabCreator extends TabCreatorManager.TabCreator {
      */
     public Tab launchUrlFromExternalApp(String url, String referer, String headers,
             String appId, boolean forceNewTab, Intent intent, long intentTimestamp) {
+        Log.wtf(LogUtil.getLogTag(ChromeTabCreator.class), "launchUrlFromExternalApp: " + url);
         assert !mIncognito;
         boolean isLaunchedFromChrome = TextUtils.equals(appId, mActivity.getPackageName());
 
@@ -276,6 +287,7 @@ public class ChromeTabCreator extends TabCreatorManager.TabCreator {
 
     @Override
     public Tab createFrozenTab(TabState state, int id, int index) {
+        Log.wtf(LogUtil.getLogTag(ChromeTabCreator.class), "createFrozenTab id: " + id + ", index: " + index);
         Tab tab = Tab.createFrozenTabFromState(
                 id, state.isIncognito(), mNativeWindow, state.parentId, state);
         boolean selectTab = mOrderController.willOpenInForeground(TabLaunchType.FROM_RESTORE,

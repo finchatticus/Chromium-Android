@@ -19,13 +19,12 @@ import org.chromium.chrome.browser.signin.ProfileDataCache;
 import org.chromium.chrome.browser.signin.SigninAccessPoint;
 import org.chromium.chrome.browser.signin.SigninManager;
 
+import vladosik.util.LogUtil;
+
 /**
  * A {@link Fragment} meant to handle sync setup for the first run experience.
  */
 public class AccountFirstRunFragment extends FirstRunPage implements AccountSigninView.Delegate {
-
-    private static final String TAG = AccountFirstRunFragment.class.getSimpleName();
-
     // Per-page parameters:
     public static final String FORCE_SIGNIN_ACCOUNT_TO = "ForceSigninAccountTo";
     public static final String PRESELECT_BUT_ALLOW_TO_CHANGE = "PreselectButAllowToChange";
@@ -36,7 +35,7 @@ public class AccountFirstRunFragment extends FirstRunPage implements AccountSign
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.wtf(TAG, "VLADOSIK onCreateView");
+        Log.wtf(LogUtil.getLogTag(AccountFirstRunFragment.class), "VLADOSIK onCreateView");
         mView = (AccountSigninView) inflater.inflate(
                 R.layout.account_signin_view, container, false);
         return mView;
@@ -54,18 +53,21 @@ public class AccountFirstRunFragment extends FirstRunPage implements AccountSign
         AccountSigninView.Listener listener = new AccountSigninView.Listener() {
             @Override
             public void onAccountSelectionCanceled() {
+                Log.wtf(LogUtil.getLogTag(AccountFirstRunFragment.class), "onAccountSelectionCanceled");
                 getPageDelegate().refuseSignIn();
                 advanceToNextPage();
             }
 
             @Override
             public void onNewAccount() {
+                Log.wtf(LogUtil.getLogTag(AccountFirstRunFragment.class), "onNewAccount");
                 FirstRunUtils.openAccountAdder(AccountFirstRunFragment.this);
             }
 
             @Override
             public void onAccountSelected(
                     String accountName, boolean isDefaultAccount, boolean settingsClicked) {
+                Log.wtf(LogUtil.getLogTag(AccountFirstRunFragment.class), "onAccountSelected");
                 getPageDelegate().acceptSignIn(accountName, isDefaultAccount);
                 if (settingsClicked) {
                     getPageDelegate().askToOpenSignInSettings();
@@ -75,6 +77,7 @@ public class AccountFirstRunFragment extends FirstRunPage implements AccountSign
 
             @Override
             public void onFailedToSetForcedAccount(String forcedAccountName) {
+                Log.wtf(LogUtil.getLogTag(AccountFirstRunFragment.class), "onFailedToSetForcedAccount");
                 // Somehow the forced account disappeared while we were in the FRE.
                 // The user would have to go through the FRE again.
                 getPageDelegate().abortFirstRunExperience();
@@ -82,8 +85,10 @@ public class AccountFirstRunFragment extends FirstRunPage implements AccountSign
         };
 
         if (forceAccountTo == null) {
+            Log.wtf(LogUtil.getLogTag(AccountFirstRunFragment.class), "forceAccountTo == null");
             mView.initFromSelectionPage(profileDataCache, isChildAccount, this, listener);
         } else {
+            Log.wtf(LogUtil.getLogTag(AccountFirstRunFragment.class), "forceAccountTo != null");
             mView.initFromConfirmationPage(profileDataCache, isChildAccount, forceAccountTo, false,
                     AccountSigninView.UNDO_INVISIBLE, this, listener);
         }
@@ -97,6 +102,7 @@ public class AccountFirstRunFragment extends FirstRunPage implements AccountSign
 
     @Override
     public boolean interceptBackPressed() {
+        Log.wtf(LogUtil.getLogTag(AccountFirstRunFragment.class), "interceptBackPressed");
         boolean forceSignin = getProperties().getString(FORCE_SIGNIN_ACCOUNT_TO) != null;
         if (!mView.isInConfirmationScreen()
                 || (forceSignin && !getProperties().getBoolean(PRESELECT_BUT_ALLOW_TO_CHANGE))) {

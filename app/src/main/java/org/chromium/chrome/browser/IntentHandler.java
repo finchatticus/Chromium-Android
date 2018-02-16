@@ -50,11 +50,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import vladosik.util.LogUtil;
+
 /**
  * Handles all browser-related Intents.
  */
 public class IntentHandler {
-    private static final String TAG = "IntentHandler";
 
     /**
      * Document mode: If true, Chrome is launched into the same Task.
@@ -292,7 +293,7 @@ public class IntentHandler {
      * @return ExternalAppId representing the app.
      */
     public static ExternalAppId determineExternalIntentSource(String packageName, Intent intent) {
-        Log.wtf(TAG, "determineExternalIntentSource");
+        Log.wtf(LogUtil.getLogTag(IntentHandler.class), "determineExternalIntentSource");
         String appId = IntentUtils.safeGetStringExtra(intent, Browser.EXTRA_APPLICATION_ID);
         ExternalAppId externalId = ExternalAppId.OTHER;
         if (appId == null) {
@@ -381,7 +382,7 @@ public class IntentHandler {
      * @return Whether the Intent was successfully handled.
      */
     boolean onNewIntent(Intent intent) {
-        Log.wtf(TAG, "onNewIntent");
+        Log.wtf(LogUtil.getLogTag(IntentHandler.class), "onNewIntent");
         updateDeferredIntent(null);
 
         assert intentHasValidUrl(intent);
@@ -762,7 +763,7 @@ public class IntentHandler {
                         return false;
                     }
 
-                    Log.w(TAG, "Ignoring internal Chrome URL from untrustworthy source.");
+                    Log.w(LogUtil.getLogTag(IntentHandler.class), "Ignoring internal Chrome URL from untrustworthy source.");
                     return true;
                 }
             }
@@ -963,11 +964,11 @@ public class IntentHandler {
      * @return URL from the Intent, or null if a valid URL couldn't be found.
      */
     public static String getUrlFromIntent(Intent intent) {
-        Log.wtf(TAG, "getUrlFromIntent start");
+        Log.wtf(LogUtil.getLogTag(IntentHandler.class), "getUrlFromIntent start");
         String url = extractUrlFromIntent(intent);
-        Log.wtf(TAG, "url: " + url);
+        Log.wtf(LogUtil.getLogTag(IntentHandler.class), "url: " + url);
         if (isGoogleChromeScheme(url)) {
-            Log.wtf(TAG, "isGoogleChromeScheme: true");
+            Log.wtf(LogUtil.getLogTag(IntentHandler.class), "isGoogleChromeScheme: true");
             url = getUrlFromGoogleChromeSchemeUrl(url);
         }
         return url;
@@ -1025,7 +1026,7 @@ public class IntentHandler {
      * @return Whether the given URL adheres to the googlechrome:// scheme definition.
      */
     public static boolean isGoogleChromeScheme(String url) {
-        Log.wtf(TAG, "isGoogleChromeScheme: " + url);
+        Log.wtf(LogUtil.getLogTag(IntentHandler.class), "isGoogleChromeScheme: " + url);
         if (url == null) return false;
         String urlScheme = Uri.parse(url).getScheme();
         return urlScheme != null && urlScheme.equals(GOOGLECHROME_SCHEME);

@@ -4,10 +4,13 @@
 
 package org.chromium.base.metrics;
 
+import org.chromium.base.Log;
 import org.chromium.base.ThreadUtils;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.base.annotations.CalledByNative;
 import org.chromium.base.annotations.JNINamespace;
+
+import vladosik.util.LogUtil;
 
 /**
  * Java API for recording UMA actions.
@@ -35,6 +38,7 @@ public class RecordUserAction {
     }
 
     public static void record(final String action) {
+        Log.wtf(LogUtil.getLogTag(RecordUserAction.class), "action: " + action);
         if (sDisabledBy != null) return;
 
         if (ThreadUtils.runningOnUiThread()) {

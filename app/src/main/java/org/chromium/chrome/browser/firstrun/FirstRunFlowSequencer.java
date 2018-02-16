@@ -36,6 +36,8 @@ import org.chromium.components.signin.ChromeSigninController;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import vladosik.util.LogUtil;
+
 /**
  * A helper to determine what should be the sequence of First Run Experience screens, and whether
  * it should be run.
@@ -47,7 +49,6 @@ import java.util.List;
  */
 public abstract class FirstRunFlowSequencer  {
     private static final int FIRST_RUN_EXPERIENCE_REQUEST_CODE = 101;
-    private static final String TAG = "firstrun";
 
     private final Activity mActivity;
 
@@ -224,6 +225,7 @@ public abstract class FirstRunFlowSequencer  {
      * @param showSignInSettings Whether the user selected to see the settings once signed in.
      */
     public static void markFlowAsCompleted(String signInAccountName, boolean showSignInSettings) {
+        Log.wtf(LogUtil.getLogTag(FirstRunFlowSequencer.class), "markFlowAsCompleted");
         // When the user accepts ToS in the Setup Wizard (see ToSAckedReceiver), we do not
         // show the ToS page to the user because the user has already accepted one outside FRE.
         if (!PrefServiceBridge.getInstance().isFirstRunEulaAccepted()) {
@@ -281,7 +283,7 @@ public abstract class FirstRunFlowSequencer  {
      * @param fromChromeIcon Whether Chrome is opened via the Chrome icon.
      */
     public static Intent createGenericFirstRunIntent(Context context, boolean fromChromeIcon) {
-        Log.wtf(TAG, "createGenericFirstRunIntent");
+        Log.wtf(LogUtil.getLogTag(FirstRunFlowSequencer.class), "createGenericFirstRunIntent");
         Intent intent = new Intent();
         intent.setClassName(context, FirstRunActivity.class.getName());
         intent.putExtra(FirstRunActivity.EXTRA_COMING_FROM_CHROME_ICON, fromChromeIcon);
@@ -290,7 +292,7 @@ public abstract class FirstRunFlowSequencer  {
 
     /** Returns an intent to show lightweight first run activity. */
     public static Intent createLightweightFirstRunIntent(Context context) {
-        Log.wtf(TAG, "createLightweightFirstRunIntent");
+        Log.wtf(LogUtil.getLogTag(FirstRunFlowSequencer.class), "createLightweightFirstRunIntent");
         Intent intent = new Intent();
         intent.setClassName(context, LightweightFirstRunActivity.class.getName());
         return intent;
@@ -337,7 +339,7 @@ public abstract class FirstRunFlowSequencer  {
         boolean firstRunComplete = IntentUtils.safeGetBooleanExtra(
                 intent, FirstRunActivity.EXTRA_FIRST_RUN_COMPLETE, false);
         if (firstRunActivityResult && !firstRunComplete) {
-            Log.d(TAG, "User failed to complete the FRE.  Aborting");
+            Log.d(LogUtil.getLogTag(FirstRunFlowSequencer.class), "User failed to complete the FRE.  Aborting");
             return true;
         }
 
@@ -345,13 +347,13 @@ public abstract class FirstRunFlowSequencer  {
         Intent freIntent = checkIfFirstRunIsNecessary(caller, intent, preferLightweightFre);
         if (freIntent == null) return false;
 
-        Log.d(TAG, "Redirecting user through FRE.");
+        Log.d(LogUtil.getLogTag(FirstRunFlowSequencer.class), "Redirecting user through FRE.");
         if ((intent.getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0) {
             boolean isGenericFreActive = false;
             List<WeakReference<Activity>> activities = ApplicationStatus.getRunningActivities();
             for (WeakReference<Activity> activityRef: activities) {
                 if (activityRef.get() != null) {
-                    Log.wtf(TAG, "activity: " + activityRef.get().getClass().getSimpleName());
+                    Log.wtf(LogUtil.getLogTag(FirstRunFlowSequencer.class), "activity: " + activityRef.get().getClass().getSimpleName());
                 }
             }
             for (WeakReference<Activity> weakActivity : activities) {
@@ -364,7 +366,7 @@ public abstract class FirstRunFlowSequencer  {
 
             if (isGenericFreActive) {
                 // Launch the Generic First Run Experience if it was previously active.
-                Log.wtf(TAG,"isGenericFreActive true");
+                Log.wtf(LogUtil.getLogTag(FirstRunFlowSequencer.class),"isGenericFreActive true");
                 freIntent = createGenericFirstRunIntent(
                         caller, TextUtils.equals(intent.getAction(), Intent.ACTION_MAIN));
             }
