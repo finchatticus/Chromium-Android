@@ -46,6 +46,7 @@ import org.chromium.base.Callback;
 import org.chromium.base.CommandLine;
 import org.chromium.base.ContextUtils;
 import org.chromium.base.DiscardableReferencePool;
+import org.chromium.base.Log;
 import org.chromium.base.SysUtils;
 import org.chromium.base.TraceEvent;
 import org.chromium.base.VisibleForTesting;
@@ -176,6 +177,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
+
+import vladosik.util.LogUtil;
 
 /**
  * A {@link AsyncInitializationActivity} that builds and manages a {@link CompositorViewHolder}
@@ -439,6 +442,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
             StrictMode.ThreadPolicy oldPolicy = StrictMode.allowThreadDiskWrites();
             try {
                 setContentView(R.layout.main);
+                Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "setContentView(R.layout.main)");
                 if (controlContainerLayoutId != NO_CONTROL_CONTAINER) {
                     ViewStub toolbarContainerStub =
                             ((ViewStub) findViewById(R.id.control_container_stub));
@@ -1840,6 +1844,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
 
     @Override
     public void createContextualSearchTab(String searchUrl) {
+        Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "createContextualSearchTab searchUrl: " + searchUrl);
         Tab currentTab = getActivityTab();
         if (currentTab == null) return;
 
@@ -1889,12 +1894,16 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
      * @return Whether the action was handled.
      */
     public boolean onMenuOrKeyboardAction(int id, boolean fromMenu) {
+        Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction");
         if (id == R.id.preferences_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: preferences_id");
             PreferencesLauncher.launchSettingsPage(this, null);
             RecordUserAction.record("MobileMenuSettings");
         } else if (id == R.id.show_menu) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: show_menu");
             showAppMenuForKeyboardEvent();
         } else if (id == R.id.find_in_page_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: find_in_page_id");
             if (mFindToolbarManager == null) return false;
 
             mFindToolbarManager.showToolbar();
@@ -1910,6 +1919,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
         }
 
         if (id == R.id.update_menu_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: update_menu_id");
             UpdateMenuItemHelper.getInstance().onMenuItemClicked(this);
             return true;
         }
@@ -1917,6 +1927,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
         final Tab currentTab = getActivityTab();
 
         if (id == R.id.help_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: help_id");
             String url = currentTab != null
                     ? currentTab.getUrl()
                     : getBottomSheet() != null && mBottomSheet.isShowingNewTab()
@@ -1933,17 +1944,21 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
         if (currentTab == null) {
             return false;
         } else if (id == R.id.forward_menu_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: forward_menu_id");
             if (currentTab.canGoForward()) {
                 currentTab.goForward();
                 RecordUserAction.record("MobileMenuForward");
             }
         } else if (id == R.id.bookmark_this_page_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: bookmark_this_page_id");
             addOrEditBookmark(currentTab);
             RecordUserAction.record("MobileMenuAddToBookmarks");
         } else if (id == R.id.offline_page_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: offline_page_id");
             DownloadUtils.downloadOfflinePage(this, currentTab);
             RecordUserAction.record("MobileMenuDownloadPage");
         } else if (id == R.id.reload_menu_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: reload_menu_id");
             if (currentTab.isLoading()) {
                 currentTab.stopLoading();
                 RecordUserAction.record("MobileMenuStop");
@@ -1952,8 +1967,10 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
                 RecordUserAction.record("MobileMenuReload");
             }
         } else if (id == R.id.info_menu_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: info_menu_id");
             PageInfoPopup.show(this, currentTab, null, PageInfoPopup.OPENED_FROM_MENU);
         } else if (id == R.id.open_history_menu_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: open_history_menu_id");
             if (NewTabPage.isNTPUrl(currentTab.getUrl())) {
                 NewTabPageUma.recordAction(NewTabPageUma.ACTION_OPENED_HISTORY_MANAGER);
             }
@@ -1961,9 +1978,11 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
             HistoryManagerUtils.showHistoryManager(this, currentTab);
             StartupMetrics.getInstance().recordOpenedHistory();
         } else if (id == R.id.share_menu_id || id == R.id.direct_share_menu_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: share_menu_id direct_share_menu_id");
             onShareMenuItemSelected(id == R.id.direct_share_menu_id,
                     getCurrentTabModel().isIncognito());
         } else if (id == R.id.print_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: print_id");
             PrintingController printingController = PrintingControllerImpl.getInstance();
             if (printingController != null && !printingController.isBusy()
                     && PrefServiceBridge.getInstance().isPrintingEnabled()) {
@@ -1972,6 +1991,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
                 RecordUserAction.record("MobileMenuPrint");
             }
         } else if (id == R.id.add_to_homescreen_id) {
+            Log.wtf(LogUtil.getLogTag(ChromeActivity.class), "onMenuOrKeyboardAction: add_to_homescreen_id");
             // Record whether or not we have finished installability checks for this page when the
             // user clicks the add to homescren menu item. This will let us determine how effective
             // an on page-load check will be in speeding up WebAPK installation.

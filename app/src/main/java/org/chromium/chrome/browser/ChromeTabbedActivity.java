@@ -1196,7 +1196,9 @@ public class ChromeTabbedActivity
      * Create an initial tab for cold start without restored tabs.
      */
     private void createInitialTab() {
+        Log.wtf(LogUtil.getLogTag(ChromeTabbedActivity.class), "createInitialTab");
         String url = HomepageManager.getHomepageUri(getApplicationContext());
+        Log.wtf(LogUtil.getLogTag(ChromeTabbedActivity.class), "createInitialTab url: " + url);
         if (TextUtils.isEmpty(url) || NewTabPage.isNTPUrl(url)) {
             url = UrlConstants.NTP_URL;
         }
@@ -1244,6 +1246,7 @@ public class ChromeTabbedActivity
         public void processUrlViewIntent(String url, String referer, String headers,
                 TabOpenType tabOpenType, String externalAppId, int tabIdToBringToFront,
                 boolean hasUserGesture, Intent intent) {
+            Log.wtf(LogUtil.getLogTag(ChromeTabbedActivity.class), "processUrlViewIntent: " + url);
             if (isFromChrome(intent, externalAppId)) {
                 RecordUserAction.record("MobileTabbedModeViewIntentFromChrome");
             } else {

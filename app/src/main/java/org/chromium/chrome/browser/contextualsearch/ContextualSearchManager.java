@@ -14,6 +14,7 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalFocusChangeListener;
 import android.view.textclassifier.TextClassifier;
 
+import org.chromium.base.Log;
 import org.chromium.base.ObserverList;
 import org.chromium.base.SysUtils;
 import org.chromium.base.VisibleForTesting;
@@ -63,6 +64,8 @@ import org.chromium.net.NetworkChangeNotifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Pattern;
+
+import vladosik.util.LogUtil;
 
 /**
  * Manager for the Contextual Search feature. This class keeps track of the status of Contextual
@@ -1189,6 +1192,7 @@ public class ContextualSearchManager
 
     @Override
     public void promoteToTab() {
+        Log.wtf(LogUtil.getLogTag(ContextualSearchManager.class), "promoteToTab");
         assert mSearchPanel != null;
         // TODO(pedrosimonetti): Consider removing this member.
         mIsPromotingToTab = true;
@@ -1200,6 +1204,7 @@ public class ContextualSearchManager
         // to search for.
         if (mSearchRequest != null && getSearchPanelContentViewCore() != null
                 && getSearchPanelContentViewCore().getWebContents() != null) {
+            Log.wtf(LogUtil.getLogTag(ContextualSearchManager.class), "promoteToTab mSearchRequest: " + mSearchRequest.getSearchUrl());
             String url = getContentViewUrl(getSearchPanelContentViewCore());
 
             // If it's a search URL, format it so the SearchBox becomes visible.

@@ -36,6 +36,7 @@ import android.widget.RemoteViews;
 
 import org.chromium.base.ApiCompatibilityUtils;
 import org.chromium.base.ContextUtils;
+import org.chromium.base.Log;
 import org.chromium.base.ThreadUtils;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.base.metrics.RecordHistogram;
@@ -86,6 +87,8 @@ import org.chromium.ui.base.PageTransition;
 import org.chromium.ui.base.WindowAndroid;
 
 import java.util.concurrent.TimeUnit;
+
+import vladosik.util.LogUtil;
 
 /**
  * The activity for custom tabs. It will be launched on top of a client's task.
@@ -749,6 +752,7 @@ public class CustomTabActivity extends ChromeActivity {
     @Override
     public void createContextualSearchTab(String searchUrl) {
         if (getActivityTab() == null) return;
+        Log.wtf(LogUtil.getLogTag(CustomTabActivity.class), "createContextualSearchTab searchUrl:" + searchUrl);
         getActivityTab().loadUrl(new LoadUrlParams(searchUrl));
     }
 

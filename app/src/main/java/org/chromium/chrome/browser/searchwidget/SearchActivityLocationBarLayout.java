@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
+import org.chromium.base.Log;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.WindowDelegate;
 import org.chromium.chrome.browser.locale.LocaleManager;
@@ -20,6 +21,8 @@ import org.chromium.ui.UiUtils;
 import org.chromium.ui.base.WindowAndroid;
 
 import java.util.List;
+
+import vladosik.util.LogUtil;
 
 /** Implementation of the {@link LocationBarLayout} that is displayed for widget searches. */
 public class SearchActivityLocationBarLayout extends LocationBarLayout {
@@ -49,6 +52,7 @@ public class SearchActivityLocationBarLayout extends LocationBarLayout {
 
     @Override
     protected void loadUrl(String url, int transition) {
+        Log.wtf(LogUtil.getLogTag(SearchActivityLocationBarLayout.class), "loadUrl url: " + url);
         mDelegate.loadUrl(url);
         LocaleManager.getInstance().recordLocaleBasedSearchMetrics(true, url, transition);
     }

@@ -4,6 +4,7 @@
 
 package org.chromium.content_public.browser;
 
+import org.chromium.base.Log;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.base.annotations.JNINamespace;
 import org.chromium.content_public.browser.navigation_controller.LoadURLType;
@@ -14,6 +15,8 @@ import org.chromium.ui.base.PageTransition;
 
 import java.util.Locale;
 import java.util.Map;
+
+import vladosik.util.LogUtil;
 
 /**
  * Holds parameters for NavigationController.LoadUrl. Parameters should match
@@ -50,6 +53,7 @@ public class LoadUrlParams {
      */
     public LoadUrlParams(String url) {
         this(url, PageTransition.LINK);
+        Log.wtf(LogUtil.getLogTag(LoadUrlParams.class), "LoadUrlParams url: " + url);
     }
 
     /**

@@ -37,6 +37,8 @@ import org.chromium.components.url_formatter.UrlFormatter;
 import org.chromium.content_public.browser.LoadUrlParams;
 import org.chromium.ui.base.ActivityWindowAndroid;
 
+import vladosik.util.LogUtil;
+
 /** Queries the user's default search engine and shows autocomplete suggestions. */
 public class SearchActivity extends AsyncInitializationActivity
         implements SnackbarManageable, SearchActivityLocationBarLayout.Delegate {
@@ -116,6 +118,7 @@ public class SearchActivity extends AsyncInitializationActivity
 
     @Override
     protected void setContentView() {
+        Log.wtf(LogUtil.getLogTag(SearchActivity.class), "setContentView");
         mSnackbarManager = new SnackbarManager(this, null);
         mSearchBoxDataProvider = new SearchBoxDataProvider();
 
@@ -235,6 +238,7 @@ public class SearchActivity extends AsyncInitializationActivity
 
     @Override
     public void loadUrl(String url) {
+        Log.wtf(LogUtil.getLogTag(SearchActivity.class), "loadUrl url: " + url);
         // Wait until native has loaded.
         if (!mIsActivityUsable) {
             mQueuedUrl = url;

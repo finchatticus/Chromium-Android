@@ -387,6 +387,7 @@ public class IntentHandler {
 
         assert intentHasValidUrl(intent);
         String url = getUrlFromIntent(intent);
+        Log.wtf(LogUtil.getLogTag(IntentHandler.class), "onNewIntent url: " + url);
         boolean hasUserGesture =
                 IntentWithGesturesHandler.getInstance().getUserGestureAndClear(intent);
         TabOpenType tabOpenType = getTabOpenType(intent);
@@ -398,7 +399,9 @@ public class IntentHandler {
         }
 
         String referrerUrl = getReferrerUrlIncludingExtraHeaders(intent);
+        Log.wtf(LogUtil.getLogTag(IntentHandler.class), "onNewIntent referrerUrl: " + referrerUrl);
         String extraHeaders = getExtraHeadersFromIntent(intent);
+        Log.wtf(LogUtil.getLogTag(IntentHandler.class), "onNewIntent extraHeaders: " + extraHeaders);
 
         // TODO(joth): Presumably this should check the action too.
         mDelegate.processUrlViewIntent(url, referrerUrl, extraHeaders, tabOpenType,

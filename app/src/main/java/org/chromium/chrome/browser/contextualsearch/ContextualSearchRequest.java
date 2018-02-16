@@ -7,6 +7,7 @@ package org.chromium.chrome.browser.contextualsearch;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import org.chromium.base.Log;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.chrome.browser.search_engines.TemplateUrlService;
 
@@ -14,6 +15,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.annotation.Nullable;
+
+import vladosik.util.LogUtil;
 
 
 /**
@@ -52,6 +55,7 @@ class ContextualSearchRequest {
      */
     ContextualSearchRequest(String searchTerm) {
         this(searchTerm, null, null, false);
+        Log.wtf(LogUtil.getLogTag(ContextualSearchRequest.class), "ContextualSearchRequest searchTerm: " + searchTerm);
     }
 
     /**
@@ -65,6 +69,7 @@ class ContextualSearchRequest {
      */
     ContextualSearchRequest(String searchTerm, @Nullable String alternateTerm, @Nullable String mid,
             boolean isLowPriorityEnabled) {
+        Log.wtf(LogUtil.getLogTag(ContextualSearchRequest.class), "ContextualSearchRequest searchTerm: " + searchTerm + ", alternateTerm: " + alternateTerm, "mid: " + mid);
         mWasPrefetch = isLowPriorityEnabled;
         mNormalPriorityUri = getUriTemplate(searchTerm, alternateTerm, mid, false);
         if (isLowPriorityEnabled) {
@@ -199,6 +204,7 @@ class ContextualSearchRequest {
      */
     protected Uri getUriTemplate(String query, @Nullable String alternateTerm, @Nullable String mid,
             boolean shouldPrefetch) {
+        Log.wtf(LogUtil.getLogTag(ContextualSearchRequest.class), "getUriTemplate query: " + query + ", alternateTerm: " + alternateTerm + ", mid: " + mid);
         Uri uri = Uri.parse(TemplateUrlService.getInstance().getUrlForContextualSearchQuery(
                 query, alternateTerm, shouldPrefetch, CTXS_TWO_REQUEST_PROTOCOL));
         if (!TextUtils.isEmpty(mid)) {

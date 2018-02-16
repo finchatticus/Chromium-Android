@@ -105,6 +105,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import vladosik.util.LogUtil;
+
 /**
  * This class represents the location bar where the user types in URLs and
  * search terms.
@@ -407,8 +409,10 @@ public class LocationBarLayout extends FrameLayout
                 if (suggestionMatch == null) return;
             }
 
+            Log.wtf(LogUtil.getLogTag(LocationBarLayout.class), "suggestionMatch: " + suggestionMatch.getDisplayText());
             String suggestionMatchUrl = updateSuggestionUrlIfNeeded(suggestionMatch,
                         suggestionMatchPosition, skipOutOfBoundsCheck);
+            Log.wtf(LogUtil.getLogTag(LocationBarLayout.class), "suggestionMatchUrl: " + suggestionMatchUrl);
             loadUrlFromOmniboxMatch(suggestionMatchUrl, suggestionMatch.getTransition(),
                     suggestionMatchPosition, suggestionMatch.getType());
         }
@@ -1636,6 +1640,7 @@ public class LocationBarLayout extends FrameLayout
         mSuggestionListAdapter.setSuggestionDelegate(new OmniboxSuggestionDelegate() {
             @Override
             public void onSelection(OmniboxSuggestion suggestion, int position) {
+                Log.wtf(LogUtil.getLogTag(LocationBarLayout.class), "onSelection suggestion: " + suggestion.getDisplayText());
                 if (mShowCachedZeroSuggestResults && !mNativeInitialized) {
                     mDeferredOnSelection = new DeferredOnSelectionRunnable(suggestion, position) {
                         @Override
@@ -1647,6 +1652,7 @@ public class LocationBarLayout extends FrameLayout
                 }
                 String suggestionMatchUrl = updateSuggestionUrlIfNeeded(
                         suggestion, position, false);
+                Log.wtf(LogUtil.getLogTag(LocationBarLayout.class), "suggestionMatchUrl: " + suggestionMatchUrl);
                 loadUrlFromOmniboxMatch(suggestionMatchUrl, suggestion.getTransition(), position,
                         suggestion.getType());
                 hideSuggestions();
@@ -2204,6 +2210,7 @@ public class LocationBarLayout extends FrameLayout
     }
 
     private void loadUrlFromOmniboxMatch(String url, int transition, int matchPosition, int type) {
+        Log.wtf(LogUtil.getLogTag(LocationBarLayout.class), "loadUrlFromOmniboxMatch url: " + url);
         // loadUrl modifies AutocompleteController's state clearing the native
         // AutocompleteResults needed by onSuggestionsSelected. Therefore,
         // loadUrl should should be invoked last.
