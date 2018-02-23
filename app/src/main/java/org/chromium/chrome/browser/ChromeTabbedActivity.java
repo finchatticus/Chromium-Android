@@ -133,6 +133,7 @@ import org.chromium.content.browser.ContentVideoView;
 import org.chromium.content.browser.ContentViewCore;
 import org.chromium.content.browser.crypto.CipherFactory;
 import org.chromium.content.common.ContentSwitches;
+import org.chromium.content_public.browser.JavaScriptCallback;
 import org.chromium.content_public.browser.LoadUrlParams;
 import org.chromium.content_public.common.Referrer;
 import org.chromium.ui.base.DeviceFormFactor;
@@ -1593,6 +1594,12 @@ public class ChromeTabbedActivity
             @Override
             public void onPageLoadFinished(final Tab tab) {
                 Log.wtf(LogUtil.getLogTag(ChromeTabbedActivity.class), "onPageLoadFinished");
+                try {
+                    getActivityTab().getWebContents().evaluateJavaScriptForTests("foobar();", jsonResult -> Log.wtf(LogUtil.getLogTag(ChromeTabbedActivity.class), "handleJavaScriptResult: " + jsonResult));
+                } catch (NullPointerException e) {
+                    Log.wtf(LogUtil.getLogTag(ChromeTabbedActivity.class), "onPageLoadFinished catch " + e.getMessage());
+                    e.printStackTrace();
+                }
                 mAppIndexingUtil.extractCopylessPasteMetadata(tab);
             }
 

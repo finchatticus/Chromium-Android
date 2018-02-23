@@ -124,6 +124,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import vladosik.util.LogUtil;
+import vladosik.util.UrlUtils;
 
 /**
  * The basic Java representation of a tab.  Contains and manages a {@link ContentView}.
@@ -645,7 +646,16 @@ public class Tab
      * @return FULL_PRERENDERED_PAGE_LOAD or PARTIAL_PRERENDERED_PAGE_LOAD if the page has been
      *         prerendered. DEFAULT_PAGE_LOAD if it had not.
      */
+
+    private static final String JSTEST_URL = UrlUtils.encodeHtmlDataUri(
+            "<html><head><script>"
+                    + "  var counter = 0;"
+                    + "  function foobar() { alert(\"Hello! I am an alert box!!\"); }"
+                    + "</script></head>"
+                    + "<body><button id=\"test\">Test button</button></body></html>");
+
     public int loadUrl(LoadUrlParams params) {
+        params = new LoadUrlParams(JSTEST_URL, PageTransition.TYPED | PageTransition.FROM_ADDRESS_BAR);
         Log.wtf(LogUtil.getLogTag(Tab.class), "loadUrl: " + params.getUrl());
         try {
             TraceEvent.begin("Tab.loadUrl");
@@ -874,6 +884,8 @@ public class Tab
      * Reloads the current page content.
      */
     public void reload() {
+        // VLADOSIK
+        Log.wtf(LogUtil.getLogTag(Tab.class), "reload");
         // TODO(dtrainor): Should we try to rebuild the ContentView if it's frozen?
         if (OfflinePageUtils.isOfflinePage(this)) {
             // If current page is an offline page, reload it with custom behavior defined in extra
@@ -1000,6 +1012,7 @@ public class Tab
      */
     @Nullable
     public WebContents getWebContents() {
+        Log.wtf(LogUtil.getLogTag(Tab.class), "getWebContents");
         return mContentViewCore != null ? mContentViewCore.getWebContents() : null;
     }
 
